@@ -10,14 +10,14 @@ locals {
     Environment = "dev"
   }
 
-  engine                = "postgres"
-  engine_version        = "11.10"
-  family                = "postgres11" # DB parameter group
-  major_engine_version  = "11"         # DB option group
+  engine                = "mysql"
+  engine_version        = "8.0.20"
+  family                = "mysql8.0" # DB parameter group
+  major_engine_version  = "8.0"      # DB option group
   instance_class        = "${var.instance_class}"
   allocated_storage     = 20
   max_allocated_storage = 100
-  port                  = 5432
+  port                  = 3306
 }
 
 
@@ -52,7 +52,7 @@ module "master" {
 
   maintenance_window              = "Mon:00:00-Mon:03:00"
   backup_window                   = "03:00-06:00"
-  enabled_cloudwatch_logs_exports = ["postgresql", "upgrade"]
+  enabled_cloudwatch_logs_exports = ["general"]
 
   # Backups are required in order to create a replica
   backup_retention_period = 1
@@ -94,7 +94,7 @@ module "replica" {
 
   maintenance_window              = "Tue:00:00-Tue:03:00"
   backup_window                   = "03:00-06:00"
-  enabled_cloudwatch_logs_exports = ["postgresql", "upgrade"]
+  enabled_cloudwatch_logs_exports = ["general"]
 
   backup_retention_period = 0
   skip_final_snapshot     = true

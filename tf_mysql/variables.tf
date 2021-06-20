@@ -2,7 +2,7 @@ variable "region"{
   default = "us-west-2"
 }
 variable "db_instance_name"{
-  default = "postgresql"
+  default = "mysql-1"
 }
 variable "instance_class"{
   default = "db.t3.medium"

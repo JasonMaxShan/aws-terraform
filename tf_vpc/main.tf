@@ -39,8 +39,20 @@ module "main_sg" {
       cidr_blocks = "0.0.0.0/0"
     },
     {
-      rule        = "http-80-tcp"
+      from_port   = "${var.server_port}"
+      to_port     = "${var.server_port}"
+      protocol    = 6
+      description = "Test Port"
       cidr_blocks = "0.0.0.0/0"
+    }
+  ]
+  ingress_with_source_security_group_id = [
+    {
+      from_port   = "${var.server_port}"
+      to_port     = "${var.server_port}"
+      protocol    = 6
+      description = "Server Port"
+      source_security_group_id = module.http_sg.security_group_id
     }
   ]
   egress_with_cidr_blocks = [
@@ -70,6 +82,29 @@ module "complete_sg" {
       rule                     = "postgresql-tcp"
       source_security_group_id = module.main_sg.security_group_id
     }]
+  egress_with_cidr_blocks = [
+    {
+      rule        = "all-all"
+      cidr_blocks = "0.0.0.0/0"
+    }
+  ]
+}
+module "http_sg" {
+  source = "../terraform-aws-modules/terraform-aws-security-group"
+
+  name        = "SG-ELB"
+  description = "Security group for ELB"
+  vpc_id      = module.vpc.vpc_id
+  use_name_prefix = false
+  ingress_with_cidr_blocks = [
+    {
+      from_port   = "${var.elb_port}"
+      to_port     = "${var.elb_port}"
+      protocol    = 6
+      description = "ELB Port"
+      cidr_blocks = "0.0.0.0/0"      
+    }
+  ]
   egress_with_cidr_blocks = [
     {
       rule        = "all-all"

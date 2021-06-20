@@ -1,0 +1,2 @@
+terraform output  > ./output.txt
+less ./output.txt

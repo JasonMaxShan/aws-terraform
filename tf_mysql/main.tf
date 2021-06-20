@@ -17,10 +17,10 @@ module "db" {
   identifier = local.name
 
   # All available versions: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_PostgreSQL.html#PostgreSQL.Concepts
-  engine               = "postgres"
-  engine_version       = "11.10"
-  family               = "postgres11" # DB parameter group
-  major_engine_version = "11"         # DB option group
+  engine                = "mysql"
+  engine_version        = "8.0.20"
+  family                = "mysql8.0" # DB parameter group
+  major_engine_version  = "8.0"      # DB option group
   instance_class       = "${var.instance_class}"
 
   allocated_storage     = 20
@@ -33,7 +33,7 @@ module "db" {
   name     = "${var.dbname}"
   username = "${var.username}"
   password = "${var.password}"
-  port     = 5432
+  port     = 3306
 
   multi_az               = true
   create_db_subnet_group = false
@@ -41,7 +41,7 @@ module "db" {
   vpc_security_group_ids = "${var.vpc_security_group_ids}"
   maintenance_window              = "Mon:00:00-Mon:03:00"
   backup_window                   = "03:00-06:00"
-  enabled_cloudwatch_logs_exports = ["postgresql", "upgrade"]
+  enabled_cloudwatch_logs_exports = ["general"]
 
   backup_retention_period = 0
   skip_final_snapshot     = true
@@ -54,12 +54,12 @@ module "db" {
 
   parameters = [
     {
-      name  = "autovacuum"
-      value = 1
+      name  = "character_set_client"
+      value = "utf8mb4"
     },
     {
-      name  = "client_encoding"
-      value = "utf8"
+      name  = "character_set_server"
+      value = "utf8mb4"
     }
   ]
 
