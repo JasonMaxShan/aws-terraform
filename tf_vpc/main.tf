@@ -29,7 +29,7 @@ module "vpc" {
 module "main_sg" {
   source = "../terraform-aws-modules/terraform-aws-security-group"
 
-  name        = "SG-server"
+  name        = "${var.main_sg_name}"
   description = "Security group for server"
   vpc_id      = module.vpc.vpc_id
   use_name_prefix = false
@@ -65,7 +65,7 @@ module "main_sg" {
 module "complete_sg" {
   source = "../terraform-aws-modules/terraform-aws-security-group"
 
-  name        = "SG-database"
+  name        = "${var.complete_sg_name}"
   description = "Security group for database"
   vpc_id      = module.vpc.vpc_id
   use_name_prefix = false
@@ -81,7 +81,12 @@ module "complete_sg" {
     {
       rule                     = "postgresql-tcp"
       source_security_group_id = module.main_sg.security_group_id
-    }]
+    },
+    {
+      rule                     = "memcached-tcp"
+      source_security_group_id = module.main_sg.security_group_id
+    }
+  ]
   egress_with_cidr_blocks = [
     {
       rule        = "all-all"
@@ -92,7 +97,7 @@ module "complete_sg" {
 module "http_sg" {
   source = "../terraform-aws-modules/terraform-aws-security-group"
 
-  name        = "SG-ELB"
+  name        = "${var.http_sg_name}"
   description = "Security group for ELB"
   vpc_id      = module.vpc.vpc_id
   use_name_prefix = false
